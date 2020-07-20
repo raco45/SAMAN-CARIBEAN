@@ -72,10 +72,13 @@ class Vip(Room):
             print("Puede hacer fiestas privadas")
 
 class Traveler:
-    def __init__(self,nombre,dni,edad,discapacidad,habitacion,status):
+    def __init__(self,nombre,dni,edad,discapacidad,tipo_hab,habitacion,status):
         self.nombre=nombre
         self.dni=dni
         self.edad=edad
         self.discapacidad=discapacidad
+        self.tipo_hab=tipo_hab
         self.habitacion=habitacion
         self.status=status
+    def change_stauts(self):
+        self.status="off"
