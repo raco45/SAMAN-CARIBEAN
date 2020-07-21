@@ -46,7 +46,7 @@ def main():
                 }
         lista_letras=list(ascii_uppercase)
         lista=["simple","premium","vip"]
-        
+        ventas=[]
         for i, barco in enumerate(dic):
                 nombre=dic[i]["name"]
                 ruta= dic[i]["route"]
@@ -55,17 +55,10 @@ def main():
                 info_pisos= dic[i]["rooms"]
                 cap_habi= dic[i]["capacity"]
                 creuceros.append(Cruise(nombre,ruta,fecha_de_salida,precio,info_pisos,cap_habi))
+                
+        
 
-        # try:
-        #         with open("texto.txt","r") as base_datos: 
-        #                 for fila in base_datos: 
-        #                         hab= (fila.strip()).split(",")
-        #                         hab_temp=Room(hab[0],hab[1],hab[2],hab[3])
-        #                         hab_ocu.append(user_temp)
-
-        # except:
-        #         hab_ocu=[]
-
+                        
         try:
                 with open("Base_de_datos.txt", "r", encoding="utf-8") as file:
                         text=file.read()

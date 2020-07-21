@@ -12,34 +12,27 @@ from string import ascii_uppercase
 
 
 def api():
+    """ Esta funcion se encarga de llamar la api en donde se encuentra la informacion de los barcos.
+
+    Returns:
+        diccionario: Diccionario que contiene la informacion de los barcos
+    """
     url= "https://saman-caribbean.vercel.app/api/cruise-ships"
     response= requests.request("GET",url)
     dic=response.json()
     return dic
 
-def api_nombre():
-    while True:
-        dic=api()
-
-        for i, barco in enumerate(dic):
-            print(f"{i+1} {dic[i]['name']} ")
-
-        option=int(input("Ingrese el barco "))
-
-        ship_selected=dic[option-1]
-
-        
-        print(f""" Nombre:{ship_selected['name']}
-        Ruta:{ship_selected['route']} 
-        Salida: {ship_selected['departure']}
-        Habitaciones: {ship_selected['rooms']}
-        Capacidad: {ship_selected['capacity']}
-        """)
-#print(api_nombre())       
-#def repre_cruzero():
-    
 
 def matrixPrinter(matricita,lista_dicc):
+    """Esta funcion se encarga de crear la matriz donde se muestran las habitaciones
+
+    Args:
+        matricita lista: Lista que contiene la lista donde se enceuntran las habitaciones.
+        lista_dicc : lista con informacionde de las habitaciones
+
+    Returns:
+        String : Retorna un string en forma de matriz que muestra de color rojo las habitaciones ocupadas y de color verde las descoupadas
+    """
     coolString= ""
     for i in range(len(matricita)):
         coolString+="["
@@ -54,6 +47,13 @@ def matrixPrinter(matricita,lista_dicc):
     return coolString
 
 def matriz_hab(barcos,barco,tipo_hab):
+    """Funcion que imprime  el string generado por la funcion matrixPrinter.
+
+    Args:
+        barcos diccionario: contiene la informacion de las habitaciones dividida por barco
+        barco string: nombre del barco que solicitado
+        tipo_hab string: indica el tipo de habitacion
+    """
     matriz=[]
     for x in range(len(barcos[barco][tipo_hab])):
         matriz.append(list(barcos[barco][tipo_hab][x].keys()))
@@ -62,6 +62,11 @@ def matriz_hab(barcos,barco,tipo_hab):
 
 
 def mostrar_barcos(cruzeros):
+    """Funcion que se encarga de imprimir la informacion de los barcos dependiendo del barco o del destino.
+
+    Args:
+        cruzeros lista de objetos: Lista que contiene la clase de cada barco
+    """    
     while True:
         try:
             menu=input("""Desea comprar su boleto en base a: 
@@ -88,6 +93,11 @@ def mostrar_barcos(cruzeros):
 
 
 def select_barco():
+    """Esta funcion se encarga de pedir el nombre del barco.
+
+    Returns:
+        String: Retorna el nombre del barco que se eligio.
+    """
     while True:
         try:
             print("Elija un barco")
@@ -103,6 +113,12 @@ def select_barco():
             print("Ese barco no se encuentra disponible")
 
 def cap_tip_hab(cruzeros,barco):
+    """Esta funcion se encarga de imprimir la capacidad por tipo de habitacion dependiendo del barco.
+
+    Args:
+        cruzeros lista de objetos: Lista que contiene la clase de cada barco
+        barco string: nombre del barco que solicitado
+    """
     print("Capacidad por tipo de habitacion: ")
     for crucero in cruzeros:
         if barco==crucero.name:
@@ -110,6 +126,13 @@ def cap_tip_hab(cruzeros,barco):
                 print(f"{key}: {value} personas")
 
 def select_hab():
+    """Esta funcion se encarga de pedir al usuario el tipo de habitacion que esta buscando.
+
+    
+
+    Returns:
+        String: retorna un string con el tipo de habitacion que se eligio.
+    """    
     while True:
         try:
             tipo_hab=input("""Indique el tipo de habitacion:
@@ -130,6 +153,17 @@ def select_hab():
             print("No disponemos de otro tipo de habitacion")
 
 def cant_personas(cruzeros,barco,tipo_hab,travelers):
+    """Esta funcion dependiendo de la cantidad de personas que se ingrese impreme cuantas habitaciones debera comprar.
+
+    Args:
+        cruzeros lista de objetos: Lista que contiene la clase de cada barco
+        barco string: nombre del barco que solicitado
+        tipo_hab string: tipo de habitacion solicidata
+        travelers int: cantidad de personas ingresadas
+
+    Returns:
+        int: retorna la capacidad de la habitacion solicitada
+    """
     for x in cruzeros:
         if x.name == barco:
             if travelers > x.room_capacity[tipo_hab]:
@@ -140,7 +174,22 @@ def cant_personas(cruzeros,barco,tipo_hab,travelers):
                 return x.room_capacity[tipo_hab]
                 
 
-def formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruceros,cap_hab,lista_letras,hab_ocu):
+def formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruceros):
+    """Esta funcion se encarga de pedir los datos al usurio y verificar si cumple las condiciones para otorgarle un descuento; 
+       y guardar toda esta informacion en un diccionario.
+
+    Args:
+        dni_1 int: dni de la persona
+        hab string: string con el nombre de la habitacion
+        tipo_hab string: tipo de habitacion solicidata
+        db diccionario: Contiene la informacion de los pasajeros
+        barcos diccionario: contiene la informacion de las habitaciones dividida por barco
+        barco string: nombre del barco que solicitado
+        cruceros lista de objetos: Lista que contiene la clase de cada barco
+        
+
+    Returns:
+        string: Retorna la palabra exitoso """
     while True:
         try:
             
@@ -149,11 +198,8 @@ def formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruceros,cap_hab,lista_letras,
             new_user["barco"]=barco
             new_user["tipo hab"]=tipo_hab
             new_user["edad"]=edad()
-            if new_user["edad"] > 65 and tipo_hab=="simple":
-                hab=age(barcos,barco,cruceros,cap_hab,lista_letras,hab_ocu)
-                new_user["hab"]=hab
-            else:
-                new_user["hab"]=hab
+            
+            new_user["hab"]=hab
             new_user["discapacidad"]=discapacidad()
             
             
@@ -192,7 +238,22 @@ def formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruceros,cap_hab,lista_letras,
             print("error")
             
 def pedir_habitacion(barcos,barco,tipo_hab,cruzeros,cap_hab,lista_letras,hab_ocu):
-   
+    """Esta funcion se encargad e pedir al usuario la habitacion que desea ocupar>
+
+    Args:
+        barcos diccionario: contiene la informacion de las habitaciones dividida por barco
+        barco string: nombre del barco que solicitado
+        tipo_hab string: tipo de habitacion solicidata
+        cruzeros lista de objetos: Lista que contiene la clase de cada barco
+        cap_hab int: capacidad del tipo de habitacion
+        lista_letras list: contiene todas las letras del abecedario en mayusculo.
+        hab_ocu lista: que contiene el objeto habitacion
+        
+
+    Returns:
+        string: retorna un string con el la inicial del tipo de habitacion, la letra del pasillo y el numero de la habitacion.
+    """
+
     
     while True:
         try:
@@ -234,6 +295,24 @@ def pedir_habitacion(barcos,barco,tipo_hab,cruzeros,cap_hab,lista_letras,hab_ocu
             
                 
 def pedir_formu(travelers,cap_hab,barcos,barco,tipo_hab,cruzeros,db,lista_letras,hab_ocu,lista_dni):
+    """Esta funcion recursiva se encarga de pedir al usuario su dni y de pedir al usuario sus datos mediante la funcion formulario, 
+       segun la cantidad de travelers que se ingrese
+
+    Args:
+        travelers int: cantidad de personas ingresadas.
+        cap_hab int: capacidad del tipo de habitacion.
+        barcos diccionario: contiene la informacion de las habitaciones dividida por barco.
+        barco string: nombre del barco que solicitado.
+        tipo_hab string: tipo de habitacion solicidata.
+        cruzeros lista de objetos: Lista que contiene la clase de cada barco.
+        db diccionario: Contiene la informacion de los pasajeros.
+        lista_letras list: contiene todas las letras del abecedario en mayusculo.
+        hab_ocu lista: que contiene el objeto habitacion.
+        lista_dni lista: lista en donde se guarda el dni de los pasajeros segun van ingresando.
+
+    Returns:
+        lista: Retorna la lista donde se guarda el dni de los pasajeros segun van ingresando.
+    """
     while True:
         precio=0
         
@@ -246,7 +325,7 @@ def pedir_formu(travelers,cap_hab,barcos,barco,tipo_hab,cruzeros,db,lista_letras
             
             while cont_1 < cap_hab:
                 dni_1=dni()
-                print(formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruzeros,cap_hab,lista_letras,hab_ocu))
+                print(formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruzeros))
                 cont_1+=1
                 lista_dni.append(dni_1)
             return pedir_formu(travelers-cap_hab,cap_hab,barcos,barco,tipo_hab,cruzeros,db,lista_letras,hab_ocu,lista_dni)
@@ -257,13 +336,18 @@ def pedir_formu(travelers,cap_hab,barcos,barco,tipo_hab,cruzeros,db,lista_letras
             
             while cont < travelers:
                 dni_1=dni()
-                print(formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruzeros,cap_hab,lista_letras,hab_ocu))
+                print(formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruzeros))
                 cont+=1
                 lista_dni.append(dni_1)
             return  lista_dni
 
 
 def nombre():
+    """ Esta funcion se encarga de pedir el nombre completo del usuario.
+    
+    Returns:
+        String -- Nombre completo ingresedo por el usuario.
+    """
     while True:
         try:
             while True:
@@ -310,6 +394,11 @@ def nombre():
 
 
 def dni():
+    """Esta funcion se encarga de pedir al usuario el numero de su documento de indentidad.
+
+    Returns:
+        string: numero del dni
+    """
     while True:
         try:
         
@@ -324,6 +413,11 @@ def dni():
             print("Error")
 
 def edad():
+    """Esta funcion se encarga de pedir la edad al usuario.
+    
+    Returns:
+        String -- Edad ingresada por el usuario.
+    """
     while True:
         try:
             
@@ -339,6 +433,11 @@ def edad():
             print("Error")
 
 def discapacidad():
+    """Esta funcion se encarga de preguntar al usuario si sufre de alguna discapacidad.
+
+    Returns:
+        bool: retorna True en caso de ser cierto y False en caso de no serlo.
+    """    
             
     while True:
         try:
@@ -360,6 +459,13 @@ def discapacidad():
                 print("Error")
 
 def desocupar(db,barcos,lista_letras):
+    """Esta funcion se encarga de desocupar una habitacion de uno de los tripulantes del barco.
+
+    Args:
+        db diccionario: Contiene la informacion de los pasajeros.
+        barcos diccionario: contiene la informacion de las habitaciones dividida por barco.
+        lista_letras list: contiene todas las letras del abecedario en mayusculo.
+    """
     while True:
         try:
             qb=input("Indique su documento de identificacion: ")
@@ -377,6 +483,14 @@ def desocupar(db,barcos,lista_letras):
             print("No esta registrado")            
 
 def buscar_hab(barcos,cruceros,lista_letras):
+    """Esta funcion se encarga de buscar y verificar la disponibilidad de una o varias habitaciones, 
+       se puede realizar la busqueda por tipo, por capacidad o por nombre de la habitacion.
+
+    Args:
+        barcos diccionario: contiene la informacion de las habitaciones dividida por barco.
+        cruceros lista de objetos: Lista que contiene la clase de cada barco.
+        lista_letras list: contiene todas las letras del abecedario en mayusculo.
+    """    
     while True:
         try:
             
@@ -455,6 +569,14 @@ def buscar_hab(barcos,cruceros,lista_letras):
 
                     
 def num_primo(num):
+    """Esta funcion se encarga de verificar si un numero es primo.
+
+    Args:
+        num (int): Numero a verificar.
+
+    Returns:
+        bool: Retorna true si cumple la condicion y false si no la cumple
+    """
     for x in range(2,num):
         if num%x==0:
             return False
@@ -464,6 +586,14 @@ def num_primo(num):
             
 
 def abundante(num):
+    """ Esta funcion se encarga de verificar si un numero es abundante.
+
+    Args:
+        num (int): Numero a verificar.
+
+    Returns:
+        bool: Retorna true si cumple la condicion y false si no la cumple.
+    """
     div=0
     for x in range(1,num):
         if num%x==0:
@@ -474,26 +604,19 @@ def abundante(num):
     else:
         return False
 
-def age(barcos,barco,cruzeros,cap_hab,lista_letras,hab_ocu):
-    while True:
-        try:
-            qb=input("""Desea recibir un upgrade de habitacion sin ningun costo? 
-            1. Si
-            2. No
-            >>>""")
-            if qb =="1":
-                tipo_hab="premium"
-                matriz_hab(barcos,barco,tipo_hab)
-                hab=pedir_habitacion(barcos,barco,tipo_hab,cruzeros,cap_hab,lista_letras,hab_ocu)
-                return hab
-            else:
-                break
-            
-        except:
-            print("error")
 
 
 def factura(barco,tipo_hab,travelers,lista_dni,cruceros,db):
+    """Esta funcion se encarga de generar e imprimir la factura del usuario .
+
+    Args:
+        barco string: nombre del barco que solicitado.
+        tipo_hab string: tipo de habitacion solicidata.
+        travelers int: cantidad de personas ingresadas.
+        lista_dni lista: lista en donde se guarda el dni de los pasajeros segun van ingresando.
+        cruceros lista de objetos: Lista que contiene la clase de cada barco.
+        db diccionario: Contiene la informacion de los pasajeros.
+    """    
     lista_hab=[]
     monto=0
     for x in cruceros:
@@ -541,11 +664,17 @@ def factura(barco,tipo_hab,travelers,lista_dni,cruceros,db):
     Total: {monto_impu}
     """)
     
+
 #modulo 3 
 
 def tour_puerto(d_ni,cupos_tours):
-    # cupos_tours["Tour en el puerto"]={}
-    # cupos_tours["Tour en el puerto"]["cupos"]=10
+    """Esta funcion se encarga de reservar cupos para el tour por el puerto y en caso de que los cupos se acaben imprime un mensaje
+       de aviso; otorga un descuento del 10% al tercer y al cuarto comprador.
+
+    Args:
+        d_ni (int): el dni de la persona que va a comprar
+        cupos_tours (diccionario): diccionario que contiene la informacion de los tours
+    """    
     lista_compradores=[]
     precio=30
     for key,x in cupos_tours["Tour en el puerto"].items():
@@ -596,6 +725,13 @@ def tour_puerto(d_ni,cupos_tours):
                 print("error")
 
 def desgutacion(d_ni,cupos_tours):
+    """Esta funcion se encarga de reservar cupos para la desgustacion de comida local y en caso de que los cupos se acaben imprime un mensaje
+       de aviso.
+
+    Args:
+        d_ni (int): el dni de la persona que va a comprar
+        cupos_tours (diccionario): diccionario que contiene la informacion de los tours
+    """    
     lista_compradores=[]
     precio=100
     for key,x in cupos_tours["Degustacion de comida"].items():
@@ -631,7 +767,13 @@ def desgutacion(d_ni,cupos_tours):
                 print("error")
                         
 def Trotar_pueblo(d_ni,cupos_tours): 
-     while True:
+    """Esta funcion ter permite anotarte para ir a trotar por el pueblo o ciudad, sus cupos son ilimitados.
+
+    Args:
+        Esta funcion se encarga de reservar cupos para el tour por el puerto y en caso de que los cupos se acaben imprime un mensaje
+       de aviso.
+    """    
+    while True:
             try:
                 personas=input("indique la cantidad de personas (No hay limite): ")
         
@@ -650,6 +792,13 @@ def Trotar_pueblo(d_ni,cupos_tours):
                 break     
 
 def lugares_historicos(d_ni,cupos_tours):
+    """Esta funcion se encarga de reservar cupos para el tour por lugares historicos y en caso de que los cupos se acaben imprime un mensaje
+       de aviso; otorga un descuento del 10% del tercer comprador en adelante.
+
+    Args:
+        Esta funcion se encarga de reservar cupos para el tour por el puerto y en caso de que los cupos se acaben imprime un mensaje
+       de aviso.
+    """    
     lista_compradores=[]
     precio=40
     for key,x in cupos_tours["Visita a lugares historicos"].items():
@@ -698,3 +847,45 @@ def lugares_historicos(d_ni,cupos_tours):
                     break
             except:
                 print("error")                 
+
+
+def restaurante():
+    while True:
+        try:
+            inter=input("""Bienvenido a la gestion de restaurantes
+            1.Agregar Platos al menu
+            2.Eliminar productos del menu
+            3.Modificar producto
+            4.Agregar combos al menu de combos
+            5.Eliminar combo
+            6.Buscar productos por nombre o rango de precio
+            7.Buscar combos por nombre o rango de precio
+            >>>>""")
+            if inter=="1":
+                tipo=input("""Indique si es 
+                1.alimento 
+                2.bebida 
+                >>>""")
+                if tipo=="1":
+                    alimento=input("""Indique si es 
+                    1.Empaque
+                    2.Preparacion
+                    >>>""")
+                
+            elif inter=="2":
+                pass
+            elif inter=="3":
+                pass
+            elif inter=="4":
+                pass
+            elif inter=="5":
+                pass
+            elif inter=="6":
+                pass
+            elif inter=="7":
+                pass
+        except:
+            print("error")
+    
+    
+#restaurante()
