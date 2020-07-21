@@ -19,6 +19,11 @@ from funciones import pedir_formu
 from funciones import desocupar
 from funciones import buscar_hab
 from funciones import factura
+from funciones import tour_puerto
+from funciones import desgutacion
+from funciones import Trotar_pueblo
+from funciones import lugares_historicos
+
 import requests
 from funciones import api
 from string import ascii_letters
@@ -33,6 +38,12 @@ def main():
 
         dic=api()
         barcos={}
+        cupos_tours={
+                        "Tour en el puerto":{"cupos":10},
+                        "Degustacion de comida":{"cupos":100},
+                        "Trotar por el pueblo":{"cupos":"ilimitados"},
+                        "Visita a lugares historicos":{"cupos":15}
+                }
         lista_letras=list(ascii_uppercase)
         lista=["simple","premium","vip"]
         
@@ -83,9 +94,18 @@ def main():
                                                 stringcito=lista_letras[i]+str(j+1)
                                                 barcos[nombre][tipo_habitacion][i][stringcito]=" "
 
-        
+        try:
+                with open("Tours.txt", "r", encoding="utf-8") as documento:
+                        cupos=documento.read()
+                        cupos_tours=json.loads(cupos)
 
-
+        except:
+                cupos_tours={
+                        "Tour en el puerto":{"cupos":10},
+                        "Degustacion de comida":{"cupos":100},
+                        "Trotar por el pueblo":{"cupos":"ilimitados"},
+                        "Visita a lugares historicos":{"cupos":15}
+                }
 
         
         while True:
@@ -96,8 +116,10 @@ def main():
                         2.Gestion de habitaciones
                         3.Descocupar habitacion
                         4.Buscar habitacion
-                        5.Salir
-                        >>>""")
+                        5.Gestion de tours
+                        6.Salir
+                        >>> """)
+                        
                         if menu=="1":
                                 print("Informacion del barco")
                                 
@@ -127,11 +149,52 @@ def main():
                                 buscar_hab(barcos,creuceros,lista_letras)
                                 continue
                         elif menu=="5":
+                                
+                                print("Gestion de tours")
+                                while True:
+                                        try:
+                                                ask=input("Ingrese su dni: ")
+                                                if ask not in db:
+                                                        print("No registrado")
+                                                        break
+                                                else:
+                                                        print("elija un tour")
+                                                tour=input("""
+                                                1.Tour en el puerto 
+                                                2.Degustación de comida local
+                                                3.Trotar por el pueblo/ciudad
+                                                4.Visita a lugares históricos
+                                                5.Salir
+                                                >>>""")
+                                                if tour=="1":
+                                                        tour_puerto(ask,cupos_tours)
+                                                        print("gracias por su compra")
+                                                        break
+                                                elif tour=="2":
+                                                        desgutacion(ask,cupos_tours)
+                                                        print("gracias por su compra")
+                                                        break
+                                                elif tour=="3":
+                                                        Trotar_pueblo(ask,cupos_tours)
+                                                        print("Gracias por su compra")
+                                                        break
+                                                elif tour=="4":
+                                                        lugares_historicos(ask,cupos_tours)
+                                                        print("Gracias por su compra")
+                                                        break
+                                                elif tour=="5":
+                                                        break
+                                        except:
+                                                print("error")
+
+                        elif menu=="6":
                                 with open("habitaciones.txt", "w", encoding="utf-8") as archivo:
                                         archivo.write(json.dumps(barcos,ensure_ascii=False))
                                 with open("Base_de_datos.txt", "w", encoding="utf-8") as file:
                                         file.write(json.dumps(db,ensure_ascii=False))
-                                
+                                with open("Tours.txt", "w", encoding="utf-8") as documento:
+                                        documento.write(json.dumps(cupos_tours,ensure_ascii=False))
+
                                 # with open("texto.txt","w") as base_datos:                                    #se abre el archivo texto.txt para poder escribir los nuevos datos del que el usuario desea guardar.  
                                 #         for hab_temp in hab_ocu:
                                 #                 big_string=(f"{hab_temp.letra},{hab_temp.numero},{hab_temp.capacidad},{hab_temp.referencia}\n")
@@ -142,6 +205,9 @@ def main():
                                 raise Exception
                 except:
                         print("Error")
+
+
+
 
 
 

@@ -541,3 +541,160 @@ def factura(barco,tipo_hab,travelers,lista_dni,cruceros,db):
     Total: {monto_impu}
     """)
     
+#modulo 3 
+
+def tour_puerto(d_ni,cupos_tours):
+    # cupos_tours["Tour en el puerto"]={}
+    # cupos_tours["Tour en el puerto"]["cupos"]=10
+    lista_compradores=[]
+    precio=30
+    for key,x in cupos_tours["Tour en el puerto"].items():
+        lista_compradores.append(x)
+    lista_compradores.append(d_ni)
+    indice=lista_compradores.index(d_ni)
+    if indice==3 or indice==4:
+        desc=precio*0.1
+    else:
+        desc=0
+    if lista_compradores[0]==0:
+        print("se acabaron los cupos")
+    else:
+        while True:
+            try:
+                personas=input("indique la cantidad de personas (max 4 personas): ")
+                if int(personas)<=lista_compradores[0]:
+                    if int(personas)>4:
+                        print("No puede llevar a mas de 4 personas")
+                        continue
+                    else:
+                        cupos_tours["Tour en el puerto"][d_ni]=f" cupos:{personas} "
+                        cupos=cupos_tours["Tour en el puerto"]["cupos"]
+                        cupos_tours["Tour en el puerto"]["cupos"]=cupos-int(personas)
+                        monto=precio-desc
+                        monto_final=monto*int(personas)
+                        if desc!=0:
+                            print(f""" Resumen de compra 
+                            Actividad: Tour en el puerto
+                            Hora: 7:00 am
+                            Costo de la entrada: ${precio}
+                            Personas:{personas}
+                            Monto total(10% descuento):${monto_final} 
+                            """)
+                        else:
+                            print(f""" Resumen de compra 
+                            Actividad: Tour en el puerto
+                            Hora: 7:00 am
+                            Costo de la entrada: ${precio}
+                            Personas:{personas}
+                            Monto total:${monto_final} 
+                            """)
+                            break
+                else:
+                    print(f"Quedan {lista_compradores[0]} cupos ")
+                    break
+            except:
+                print("error")
+
+def desgutacion(d_ni,cupos_tours):
+    lista_compradores=[]
+    precio=100
+    for key,x in cupos_tours["Degustacion de comida"].items():
+        lista_compradores.append(x)
+    lista_compradores.append(d_ni)
+    if lista_compradores[0]==0:
+        print("se acabaron los cupos")
+    else:
+        while True:
+            try:
+                personas=input("indique la cantidad de personas (max 2 personas): ")
+                if int(personas)<lista_compradores[0]:
+                    if int(personas)>2:
+                        print("No puede llevar a mas de 2 personas")
+                        continue
+                    else:
+                        cupos_tours["Degustacion de comida"][d_ni]=f" cupos:{personas} "
+                        cupos=cupos_tours["Degustacion de comida"]["cupos"]
+                        cupos_tours["Degustacion de comida"]["cupos"]=cupos-int(personas)
+                        monto=precio
+                        monto_final=monto*int(personas)
+                        print(f""" Resumen de compra 
+                        Actividad: Degustación de comida local
+                        Hora: 12:00 pm
+                        Costo de la entrada: ${precio}
+                        Personas:{personas}
+                        Monto total:${monto_final} 
+                        """)
+                else:
+                    print(f"Quedan {lista_compradores[0]} cupos ")
+                    break
+            except:
+                print("error")
+                        
+def Trotar_pueblo(d_ni,cupos_tours): 
+     while True:
+            try:
+                personas=input("indique la cantidad de personas (No hay limite): ")
+        
+                cupos_tours["Trotar por el pueblo"][d_ni]=f" cupos:{personas} "
+                
+                
+                print(f""" Resumen de compra 
+                Actividad: trotar por el pueblo/ciudad
+                Hora: 6:00 am
+                Personas:{personas}
+                """)
+                break
+                
+            except:
+                print("error")
+                break     
+
+def lugares_historicos(d_ni,cupos_tours):
+    lista_compradores=[]
+    precio=40
+    for key,x in cupos_tours["Visita a lugares historicos"].items():
+        lista_compradores.append(x)
+    lista_compradores.append(d_ni)
+    indice=lista_compradores.index(d_ni)
+    if indice>=3 :
+        desc=precio*0.1
+    else:
+        desc=0
+    if lista_compradores[0]==0:
+        print("se acabaron los cupos")
+    else:
+        while True:
+            try:
+                personas=input("indique la cantidad de personas (max 4 personas): ")
+                if int(personas)<=lista_compradores[0]:
+                    if int(personas)>4:
+                        print("No puede llevar a mas de 4 personas")
+                        continue
+                    else:
+                        cupos_tours["Visita a lugares historicos"][d_ni]=f" cupos:{personas} "
+                        cupos=cupos_tours["Visita a lugares historicos"]["cupos"]
+                        cupos_tours["Visita a lugares historicos"]["cupos"]=cupos-int(personas)
+                        monto=precio-desc
+                        monto_final=monto*int(personas)
+                        if desc!=0:
+                            print(f""" Resumen de compra 
+                            Actividad: Visita a lugares historicos
+                            Hora: 10:00 am
+                            Costo de la entrada: ${precio}
+                            Personas:{personas}
+                            Monto total(10% descuento):${monto_final} 
+                            """)
+                        else:
+                            print(f""" Resumen de compra 
+                            Actividad: Visita a lugares historicos
+                            Hora: 10:00 am
+                            Costo de la entrada: ${precio}
+                            Personas:{personas}
+                            Monto total:${monto_final} 
+                            """)
+                            break
+                else:
+                    print(f"Quedan {lista_compradores[0]} cupos ")
+                    break
+            except:
+                print("error")                 
