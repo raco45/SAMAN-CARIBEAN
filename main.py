@@ -23,7 +23,7 @@ from funciones import tour_puerto
 from funciones import desgutacion
 from funciones import Trotar_pueblo
 from funciones import lugares_historicos
-
+from funciones import restaurante
 import requests
 from funciones import api
 from string import ascii_letters
@@ -100,7 +100,17 @@ def main():
                         "Visita a lugares historicos":{"cupos":15}
                 }
 
-        
+
+        restau={}
+        try:
+                with open("Menu.txt", "r", encoding="utf-8") as resta:
+                        men=resta.read()
+                        restau=json.loads(men)
+
+        except:        
+                for x in creuceros:
+                        restau[x.name]={}
+                
         while True:
                 try:
                         color=Fore.LIGHTWHITE_EX
@@ -110,7 +120,8 @@ def main():
                         3.Descocupar habitacion
                         4.Buscar habitacion
                         5.Gestion de tours
-                        6.Salir
+                        6.Gestion de restaurantes
+                        8.Salir
                         >>> """)
                         
                         if menu=="1":
@@ -179,14 +190,21 @@ def main():
                                                         break
                                         except:
                                                 print("error")
-
+                                
                         elif menu=="6":
+                                barco=select_barco()
+                                restaurante(restau,barco)
+                                continue
+
+                        elif menu=="8":
                                 with open("habitaciones.txt", "w", encoding="utf-8") as archivo:
                                         archivo.write(json.dumps(barcos,ensure_ascii=False))
                                 with open("Base_de_datos.txt", "w", encoding="utf-8") as file:
                                         file.write(json.dumps(db,ensure_ascii=False))
                                 with open("Tours.txt", "w", encoding="utf-8") as documento:
                                         documento.write(json.dumps(cupos_tours,ensure_ascii=False))
+                                with open("Menu.txt", "w", encoding="utf-8") as resta:
+                                        resta.write(json.dumps(restau,ensure_ascii=False))
 
                                 # with open("texto.txt","w") as base_datos:                                    #se abre el archivo texto.txt para poder escribir los nuevos datos del que el usuario desea guardar.  
                                 #         for hab_temp in hab_ocu:

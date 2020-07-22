@@ -848,8 +848,14 @@ def lugares_historicos(d_ni,cupos_tours):
             except:
                 print("error")                 
 
+#modulo 4
+def restaurante(menu,barco):
+    """Esta funcion se encarga de administrar las acciones que se pueden realizar para gestionar el menu del restaurante de cada barco.
 
-def restaurante():
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+    """    
     while True:
         try:
             inter=input("""Bienvenido a la gestion de restaurantes
@@ -860,32 +866,428 @@ def restaurante():
             5.Eliminar combo
             6.Buscar productos por nombre o rango de precio
             7.Buscar combos por nombre o rango de precio
+            8.Salir
             >>>>""")
             if inter=="1":
-                tipo=input("""Indique si es 
-                1.alimento 
-                2.bebida 
-                >>>""")
-                if tipo=="1":
-                    alimento=input("""Indique si es 
-                    1.Empaque
-                    2.Preparacion
-                    >>>""")
-                
+               agregar_producto(menu,barco)
+               continue
             elif inter=="2":
-                pass
+                eliminar_producto(menu,barco)
+                
+                continue
             elif inter=="3":
-                pass
+                modificar(menu,barco)
+                continue
             elif inter=="4":
-                pass
+                agregar_combo(menu,barco)
+                continue
             elif inter=="5":
-                pass
+                eliminar_combo(menu,barco)
+                continue
             elif inter=="6":
-                pass
+                buscar_productos(menu,barco)
             elif inter=="7":
-                pass
+                buscar(menu,barco,tipo_producto="Combos")
+            else:
+                break
         except:
             print("error")
     
+def agregar_producto(menu,barco):
+    """Esta funcion se encarga de agregar productos al menu del crucero dividiendolos en bebidas o alimento.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+
     
-#restaurante()
+
+    Returns:
+        [lista]:  Lista que contiene la informacion del menu de cada restaurante
+    """    
+    while True:
+        try:
+            tipo=input("""Indique si es 
+                1.alimento 
+                2.bebida 
+                >>>""")
+            nombre_pro=input("indique el nombre del producto: ").lower()
+            if not nombre_pro.isalpha():
+                print("No valido")
+                continue
+            if tipo=="1":
+                menu[barco]["alimentos"][nombre_pro]={}
+                alimento=input("""Indique si es 
+                1.Empaque
+                2.Preparacion
+                >>>""")
+                if alimento=="1":
+                    
+                    menu[barco]["alimentos"][nombre_pro]["tipo"]="empaque"
+                    
+                elif alimento=="2":
+                    menu[barco]["alimentos"][nombre_pro]["tipo"]="preparacion"
+                   
+                else:
+                    print("No tenemos tantas opciones")
+                    raise Exception
+                while True:
+                    precio=input("Ingrese el nuevo precio: ")
+                    if precio.isalpha():
+                        continue
+                    precio_def=float(precio)+(float(precio)*0.16)
+                    menu[barco]["alimentos"][nombre_pro]["precio"]=precio_def
+                    break
+                print("Se guardo el producto con exito")        
+                return menu
+                    
+            elif tipo=="2":
+                menu[barco]["bebidas"][nombre_pro]={}
+                bebida=input("""Indique el tamaño de la bebida
+                1.Pequeño
+                2.Mediana
+                3.Grande 
+                >>""")
+                if bebida=="1":
+                    menu[barco]["bebidas"][nombre_pro]["tamaño"]="Pequeño"
+                    
+                elif bebida=="2":
+                    menu[barco]["bebidas"][nombre_pro]["tamaño"]="Mediana"
+                    
+                elif bebida=="3":
+                    menu[barco]["bebidas"][nombre_pro]["tamaño"]="Grande"
+                    
+                else:
+                    print("No tenemos ese tamaño")
+                    raise Exception
+                while True:
+                    precio=input("Ingrese el nuevo precio: ")
+                    if precio.isalpha():
+                        continue
+                    precio_def=float(precio)+(float(precio)*0.16)
+                    menu[barco]["bebidas"][nombre_pro]["precio"]=precio_def
+                    break
+                print("Se guardo el producto con exito")        
+                return menu
+            else:
+                raise Exception
+        except:
+            print("Error")
+
+def eliminar_producto(menu,barco):
+    """Esta funcion se encarga de eliminar un producto del menu del crucero.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+
+    
+    """    
+    while True:
+        try:
+            tipo=input("""Indique si es 
+                1.alimento 
+                2.bebida 
+                >>>""")
+            if tipo=="1":
+                lista_productos=[]
+                print("Alimentos")
+                for x in menu[barco]["alimentos"]:
+                    lista_productos.append(x)
+                    print(x)
+                nombre_pro=input("Escriba el nombre del producto que desea eliminar ").lower()
+                if nombre_pro in lista_productos:
+                    menu[barco]["alimentos"].pop(nombre_pro)
+                    print("Se elimino el producto con exito")
+                    break
+                else:
+                    print("No se encontro el producto")
+                    raise Exception
+            elif tipo=="2":
+                lista_productos=[]
+                print("Bebidas")
+                for x in menu[barco]["bebidas"]:
+                    lista_productos.append(x)
+                    print(x)
+
+                nombre_pro=input("Escriba el nombre del producto que desea eliminar ").lower()
+                if nombre_pro in lista_productos:
+                    menu[barco]["bebidas"].pop(nombre_pro)
+                    print("Se elimino el producto con exito")
+                    break
+                else:
+                    print("No se encontro el producto")
+                    raise Exception
+            else:
+                print("No exite")
+                raise Exception
+        except:
+            print("error")
+
+def modificar(menu,barco):
+    """Esta funcion se encarga de modificar la informacion de uno o varios productos del menu del crucero.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+
+    
+    """    
+    while True:
+        try:
+            tipo=input("""Indique si es 
+                1.alimento 
+                2.bebida 
+                >>>""")
+            nombre_pro=input("indique el nombre del producto: ").lower()
+            lista_productos=[]
+            if not nombre_pro.isalpha():
+                print("No valido")
+                continue
+            if tipo=="1":
+                for x in menu[barco]["alimentos"]:
+                    lista_productos.append(x)
+                if nombre_pro not in lista_productos:
+                    print("No se encuentra en el menu")
+                    raise Exception
+                change=input("""Desea cambiar 
+                1.Tipo
+                2.Precio
+                >>""")
+                if change=="1":
+                    alimento=input("""Indique si es 
+                1.Empaque
+                2.Preparacion
+                >>>""")
+                    if alimento=="1":
+                        menu[barco]["alimentos"][nombre_pro]["tipo"]="empaque"
+                    elif alimento=="2":
+                        menu[barco]["alimentos"][nombre_pro]["tipo"]="preparacion"
+                    else:
+                        print("No tenemos tantas opciones")
+                        raise Exception
+                    print("cambio exitoso")
+                    break
+                elif change=="2":
+                    while True:
+                        precio=input("Ingrese el nuevo precio: ")
+                        if precio.isalpha():
+                            continue
+                        precio_def=float(precio)+(float(precio)*0.16)
+                        menu[barco]["alimentos"][nombre_pro]["precio"]=precio_def
+                        break
+                
+                    print("Se realizo el cambio con exito")
+                    break
+                else:
+                    raise Exception
+            elif tipo=="2":
+                for x in menu[barco]["bebidas"]:
+                    lista_productos.append(x)
+                if nombre_pro not in lista_productos:
+                    print("No se encuentra en el menu")
+                    raise Exception
+                change=input("""Desea cambiar 
+                1.Tamaño
+                2.Precio
+                >>""")
+                if change=="1":
+                    bebida=input("""Indique el tamaño de la bebida
+                1.Pequeño
+                2.Mediana
+                3.Grande 
+                >>""")
+                    if bebida=="1":
+                        menu[barco]["bebidas"][nombre_pro]["tamaño"]="Pequeño"
+                        
+                    elif bebida=="2":
+                        menu[barco]["bebidas"][nombre_pro]["tamaño"]="Mediana"
+                        
+                    elif bebida=="3":
+                        menu[barco]["bebidas"][nombre_pro]["tamaño"]="Grande"
+                    else:
+                        raise Exception
+                elif change=="2":
+                    while True:
+                        precio=input("Ingrese el nuevo precio: ")
+                        if precio.isalpha():
+                            continue
+                        precio_def=float(precio)+(float(precio)*0.16)
+                        menu[barco]["bebidas"][nombre_pro]["precio"]=precio_def
+                        break
+                    print("Se realizo el cambio con exito")
+                    break
+                else:
+                    raise Exception
+            else:
+                print("No exite")
+                raise Exception
+        except:
+            print("error")
+
+
+def agregar_combo(menu,barco):
+    """Esta funcion se encarga de crear y agrar un combo al menu del crucero.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+    """    
+    
+    while True:
+        try:
+            combo=input("Ingrese el nombre del combo: ").lower()
+            
+            productos=[]
+            cont=0
+            while True:
+                seguir=True
+                products=input("Ingrese el nombre del producto que desea tener en el combo: ").lower()
+                cont+=1
+                productos.append(products)
+                if cont>=2:
+                    while True:
+                        ask=input("""Desea agregar mas productos al combo?: 
+                        1.Si
+                        2.No
+                        >>""")
+                        if ask=="1":
+                            seguir=True
+                            break
+                        elif ask=="2":
+                            seguir=False
+                            break
+                        else:
+                            continue
+                if seguir:
+                    continue
+                elif seguir==False:
+                    break
+            menu[barco]["Combos"][combo]={}
+            menu[barco]["Combos"][combo]["productos"]=productos
+            while True:
+                precio=input("Ingrese el nuevo precio: ")
+                if precio.isalpha():
+                    continue
+                precio_def=float(precio)+(float(precio)*0.16)
+                menu[barco]["Combos"][combo]["precio"]=precio_def 
+                break
+            print("Exitoso")
+            break
+        except:
+            print("error")
+def eliminar_combo(menu,barco):
+    """Esta funcion se encarga de eliminar un combo del menu del crucero.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+
+    
+    """    
+    while True:
+        try:
+            lista_productos=[]
+            print("Combos")
+            for x in menu[barco]["Combos"]:
+                lista_productos.append(x)
+                print(x)
+                
+            nombre_pro=input("Escriba el nombre del combo que desea eliminar: ").lower()
+            if nombre_pro in lista_productos:
+                menu[barco]["Combos"].pop(nombre_pro)
+                print("Se elimino con exito el combo")
+                break
+            else:
+                print("No se encontro el producto")
+                raise Exception
+        except:
+            print("error")
+
+def buscar_productos(menu,barco):
+    """Esta funcion se encarga de llamar a la funcion buscar dependiendo del tipo de producto que se quiera buscar.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+    """    
+    while True:
+        try:
+            tipo=input("""Indique si es 
+                1.alimento 
+                2.bebida 
+                >>>""")
+            if tipo=="1":
+                tipo_producto= "alimentos"
+                buscar(menu,barco,tipo_producto)
+                break
+            elif tipo=="2":
+                tipo_producto="bebidas"
+                buscar(menu,barco,tipo_producto)
+                break
+            else:
+                continue
+        except:
+            print("error")
+
+
+
+def buscar(menu,barco,tipo_producto):
+    """Esta funcion se encarga de buscar productos o combos dependiendo del precio o nombre del producto.
+
+    Args:
+        menu (lista): Lista que contiene la informacion del menu de cada restaurante
+        barco (string): String del nombre del barco que estamos gestionando
+        tipo_producto (string): string que indica si el tipo de producto o combo.
+
+    
+    """    
+    while True:
+        try:
+            search=input(""" Desea buscar por nombre o precio 
+            1.Nombre
+            2.Precio
+            >>>""")
+
+            if search=="1":
+                ali=input("Ingrese el nombre de lo que desea buscar: ").lower()
+                lista_pro=[]
+                for x in menu[barco][tipo_producto]:
+                    lista_pro.append(x)
+                if ali in lista_pro:
+                    for key, value in menu[barco][tipo_producto][ali].items():
+                        if key=="precio":
+                            print(f"{key}: ${value}")
+                    break
+                elif ali not in lista_pro:
+                    print("No se encuentra ese producto")
+                    continue
+            elif search=="2":
+                rango=input("""Indique el rango de precio 
+                1. Entre $1 y $50
+                2. Entre $50 y $100
+                3. Entre $100 y $200 
+                >>> """)
+                if rango=="1":
+                    for x in menu[barco][tipo_producto]:
+                        precios=menu[barco][tipo_producto][x]["precio"]
+                        if precios>0 and precios<50:
+                            print(f"{x} precio: ${precios}")
+                elif rango=="2":
+                    for x in menu[barco][tipo_producto]:
+                        precios=menu[barco][tipo_producto][x]["precio"]
+                        if precios>50 and precios<100:
+                            print(f"{x} precio: ${precios}")
+                elif rango=="3":
+                    for x in menu[barco][tipo_producto]:
+                        precios=menu[barco][tipo_producto][x]["precio"]
+                        if precios>100 and precios<200:
+                            print(f"{x} precio: ${precios}")
+                else:
+                    continue      
+            else:
+                raise Exception  
+            break
+        except:
+            print("error")
+

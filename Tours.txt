@@ -1,0 +1,1 @@
+{"Tour en el puerto": {"cupos": 10}, "Degustacion de comida": {"cupos": 100}, "Trotar por el pueblo": {"cupos": "ilimitados"}, "Visita a lugares historicos": {"cupos": 12, "28155110": " cupos:3 "}}
