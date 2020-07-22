@@ -24,6 +24,8 @@ from funciones import desgutacion
 from funciones import Trotar_pueblo
 from funciones import lugares_historicos
 from funciones import restaurante
+from funciones import prom_gasto
+from funciones import no_tour
 import requests
 from funciones import api
 from string import ascii_letters
@@ -121,6 +123,7 @@ def main():
                         4.Buscar habitacion
                         5.Gestion de tours
                         6.Gestion de restaurantes
+                        7.Estadisticas
                         8.Salir
                         >>> """)
                         
@@ -171,11 +174,13 @@ def main():
                                                 5.Salir
                                                 >>>""")
                                                 if tour=="1":
-                                                        tour_puerto(ask,cupos_tours)
+                                                        monto_final=tour_puerto(ask,cupos_tours)
+                                                        db[ask]["tour"]=monto_final
                                                         print("gracias por su compra")
                                                         break
                                                 elif tour=="2":
-                                                        desgutacion(ask,cupos_tours)
+                                                        monto_final=desgutacion(ask,cupos_tours)
+                                                        db[ask]["tour"]=monto_final
                                                         print("gracias por su compra")
                                                         break
                                                 elif tour=="3":
@@ -183,7 +188,8 @@ def main():
                                                         print("Gracias por su compra")
                                                         break
                                                 elif tour=="4":
-                                                        lugares_historicos(ask,cupos_tours)
+                                                        monto_final=lugares_historicos(ask,cupos_tours)
+                                                        db[ask]["tour"]=monto_final
                                                         print("Gracias por su compra")
                                                         break
                                                 elif tour=="5":
@@ -195,7 +201,11 @@ def main():
                                 barco=select_barco()
                                 restaurante(restau,barco)
                                 continue
-
+                        elif menu=="7":
+                                prom_gasto(db)
+                                print("<>"*10)
+                                no_tour(db)
+                                continue
                         elif menu=="8":
                                 with open("habitaciones.txt", "w", encoding="utf-8") as archivo:
                                         archivo.write(json.dumps(barcos,ensure_ascii=False))

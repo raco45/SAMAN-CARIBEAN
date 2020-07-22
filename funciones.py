@@ -224,7 +224,7 @@ def formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruceros):
                 else:
                     new_user["precio"]=precio
 
-                
+            new_user["tour"]=0    
             db[dni_1]=new_user
                 
                     
@@ -709,6 +709,7 @@ def tour_puerto(d_ni,cupos_tours):
                             Personas:{personas}
                             Monto total(10% descuento):${monto_final} 
                             """)
+                            return monto_final
                         else:
                             print(f""" Resumen de compra 
                             Actividad: Tour en el puerto
@@ -717,7 +718,7 @@ def tour_puerto(d_ni,cupos_tours):
                             Personas:{personas}
                             Monto total:${monto_final} 
                             """)
-                            break
+                            return monto_final
                 else:
                     print(f"Quedan {lista_compradores[0]} cupos ")
                     break
@@ -760,6 +761,7 @@ def desgutacion(d_ni,cupos_tours):
                         Personas:{personas}
                         Monto total:${monto_final} 
                         """)
+                        return monto_final
                 else:
                     print(f"Quedan {lista_compradores[0]} cupos ")
                     break
@@ -833,6 +835,7 @@ def lugares_historicos(d_ni,cupos_tours):
                             Personas:{personas}
                             Monto total(10% descuento):${monto_final} 
                             """)
+                            return monto_final
                         else:
                             print(f""" Resumen de compra 
                             Actividad: Visita a lugares historicos
@@ -841,7 +844,7 @@ def lugares_historicos(d_ni,cupos_tours):
                             Personas:{personas}
                             Monto total:${monto_final} 
                             """)
-                            break
+                            return monto_final
                 else:
                     print(f"Quedan {lista_compradores[0]} cupos ")
                     break
@@ -1290,4 +1293,137 @@ def buscar(menu,barco,tipo_producto):
             break
         except:
             print("error")
+
+#modulo 5 
+
+def prom_gasto(db):
+    lista_barco1=[]
+    lista_barco2=[]
+    lista_barco3=[]
+    lista_barco4=[]
+
+    for x in db:
+        if db[x]["barco"]=="El Dios de los Mares":
+            lista_barco1.append(x)
+        elif db[x]["barco"]=="La Reina Isabel":
+            lista_barco2.append(x)
+        elif db[x]["barco"]=="El Libertador del Océano":
+            lista_barco3.append(x)
+        elif db[x]["barco"]=="Sabas Nieves":
+            lista_barco4.append(x)
+
+    print("El Dios de los Mares")
+    tours=0
+    tickets=0
+    for x in lista_barco1:
+        tours+=db[x]["tour"]
+        tickets+=db[x]["precio"]
+    suma=tours+tickets
+    cant_personas=len(lista_barco1)
+    promedio_gasto=suma/cant_personas
+    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+
+    print("<>"*10)
+
+    print("La Reina Isabel")
+    tours=0
+    tickets=0
+    for x in lista_barco2:
+        tours+=db[x]["tour"]
+        tickets+=db[x]["precio"]
+    suma=tours+tickets
+    cant_personas=len(lista_barco1)
+    promedio_gasto=suma/cant_personas
+    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+
+    print("<>"*10)
+
+    print("El Libertador del Océano")
+    tours=0
+    tickets=0
+    for x in lista_barco3:
+        tours+=db[x]["tour"]
+        tickets+=db[x]["precio"]
+    suma=tours+tickets
+    cant_personas=len(lista_barco1)
+    promedio_gasto=suma/cant_personas
+    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+
+    print("<>"*10)
+
+    print("Sabas Nieves")
+    tours=0
+    tickets=0
+    for x in lista_barco4:
+        tours+=db[x]["tour"]
+        tickets+=db[x]["precio"]
+    suma=tours+tickets
+    cant_personas=len(lista_barco1)
+    promedio_gasto=suma/cant_personas
+    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+
+def no_tour(db):
+    lista_barco1=[]
+    lista_barco2=[]
+    lista_barco3=[]
+    lista_barco4=[]
+    for x in db:
+        if db[x]["barco"]=="El Dios de los Mares":
+            lista_barco1.append(x)
+        elif db[x]["barco"]=="La Reina Isabel":
+            lista_barco2.append(x)
+        elif db[x]["barco"]=="El Libertador del Océano":
+            lista_barco3.append(x)
+        elif db[x]["barco"]=="Sabas Nieves":
+            lista_barco4.append(x)
+    
+    print("El Dios de los Mares")
+    cant_trav=len(lista_barco1)
+    no_tour=[]
+    for x in lista_barco1:
+        if db[x]["tour"]==0:
+            no_tour.append(x)
+    cant_no_tour=len(no_tour)
+    porct=(cant_no_tour*100)/cant_trav
+    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+
+    print("<>"*10)   
+
+    print("La Reina Isabel")
+    cant_trav=len(lista_barco2)
+    no_tour=[]
+    for x in lista_barco2:
+        if db[x]["tour"]==0:
+            no_tour.append(x)
+    cant_no_tour=len(no_tour)
+    porct=(cant_no_tour*100)/cant_trav
+    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+
+    print("<>"*10)
+
+    print("El Libertador del Océano")
+    cant_trav=len(lista_barco3)
+    no_tour=[]
+    for x in lista_barco3:
+        if db[x]["tour"]==0:
+            no_tour.append(x)
+    cant_no_tour=len(no_tour)
+    porct=(cant_no_tour*100)/cant_trav
+    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+
+    print("<>"*10)
+
+    print("Sabas Nieves")
+    cant_trav=len(lista_barco4)
+    no_tour=[]
+    for x in lista_barco4:
+        if db[x]["tour"]==0:
+            no_tour.append(x)
+    cant_no_tour=len(no_tour)
+    porct=(cant_no_tour*100)/cant_trav
+
+    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+
+def top_3_fidelidad(db):
+    
 
