@@ -5,10 +5,11 @@ from clases import Room
 from clases import Sencilla
 from clases import Premium
 from clases import Vip
-from clases import Traveler
+
 import requests 
 from string import ascii_letters
 from string import ascii_uppercase
+
 
 
 def api():
@@ -208,21 +209,21 @@ def formulario(dni_1,hab,tipo_hab,db,barcos,barco,cruceros):
                 if x.name==barco:
                     precio=x.prize[tipo_hab]
 
-                if new_user["discapacidad"]==True:
-                    precio_desc=precio-(precio* 0.3)
+            if new_user["discapacidad"]==True:
+                precio_desc=precio-(precio* 0.3)
+                new_user["precio"]=precio_desc
+            elif new_user["discapacidad"]==False:
+                if abundante(int(dni_1))==True:  
+                    precio_desc=precio-(precio*0.15)
                     new_user["precio"]=precio_desc
-                elif new_user["discapacidad"]==False:
-                    if abundante(int(dni_1))==True:  
-                        precio_desc=precio-(precio*0.15)
+                elif abundante(int(dni_1))==False :
+                    if num_primo(int(dni_1))==True:
+                        precio_desc=precio-(precio*0.1)
                         new_user["precio"]=precio_desc
-                    elif abundante(int(dni_1))==False :
-                        if num_primo(int(dni_1))==True:
-                            precio_desc=precio-(precio*0.1)
-                            new_user["precio"]=precio_desc
-                        elif num_primo(int(dni_1))==False:
-                           new_user["precio"]=precio
-                else:
-                    new_user["precio"]=precio
+                    elif num_primo(int(dni_1))==False:
+                        new_user["precio"]=precio
+            else:
+                new_user["precio"]=precio
 
             new_user["tour"]=0    
             db[dni_1]=new_user
@@ -469,11 +470,15 @@ def desocupar(db,barcos,lista_letras):
     while True:
         try:
             qb=input("Indique su documento de identificacion: ")
+            
             if db.get(qb):
                 user=db[qb]
-                indice=lista_letras.index(user["hab"][0])
-                if barcos[user["barco"]][user["tipo hab"]][indice][user["hab"]]== "Ocupada":
-                    barcos[user["barco"]][user["tipo hab"]][indice][user["hab"]]=" "
+                barco=user["barco"]
+                tipo_hab=user["tipo hab"]
+                hab=user["hab"]
+                indice=lista_letras.index(hab[1::][0])
+                if barcos[barco][tipo_hab][indice][hab[1::]]== "Ocupada":
+                    barcos[barco][tipo_hab][indice][hab[1::]]=" "
                     print("La habitacion ha sido desocupada")
                     break
                 else:
@@ -1296,23 +1301,22 @@ def buscar(menu,barco,tipo_producto):
 
 #modulo 5 
 
-def prom_gasto(db):
+def prom_gasto(db,barco):
+    """Esta funcion se encarga de sacar el promedio de gasto por cliente del crucero.
+
+    Args:
+        db (diccionario):Contiene la informacion de los pasajeros
+        barco (string): String del nombre del barco que estamos gestionando
+    """
+
     lista_barco1=[]
-    lista_barco2=[]
-    lista_barco3=[]
-    lista_barco4=[]
-
+    
+    
     for x in db:
-        if db[x]["barco"]=="El Dios de los Mares":
+        if db[x]["barco"]==barco:
             lista_barco1.append(x)
-        elif db[x]["barco"]=="La Reina Isabel":
-            lista_barco2.append(x)
-        elif db[x]["barco"]=="El Libertador del Océano":
-            lista_barco3.append(x)
-        elif db[x]["barco"]=="Sabas Nieves":
-            lista_barco4.append(x)
-
-    print("El Dios de los Mares")
+        
+    print(barco)
     tours=0
     tickets=0
     for x in lista_barco1:
@@ -1323,50 +1327,122 @@ def prom_gasto(db):
     promedio_gasto=suma/cant_personas
     print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
 
-    print("<>"*10)
 
-    print("La Reina Isabel")
-    tours=0
-    tickets=0
-    for x in lista_barco2:
-        tours+=db[x]["tour"]
-        tickets+=db[x]["precio"]
-    suma=tours+tickets
-    cant_personas=len(lista_barco1)
-    promedio_gasto=suma/cant_personas
-    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+   
 
-    print("<>"*10)
+def no_tour(db,barco):
+    """Esta funcion se encarga de de calcular el porcentaje de clientes que no compraron algun tour del barco.
 
-    print("El Libertador del Océano")
-    tours=0
-    tickets=0
-    for x in lista_barco3:
-        tours+=db[x]["tour"]
-        tickets+=db[x]["precio"]
-    suma=tours+tickets
-    cant_personas=len(lista_barco1)
-    promedio_gasto=suma/cant_personas
-    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+    Args:
+        db (diccionario):Contiene la informacion de los pasajeros
+        barco (string): String del nombre del barco que estamos gestionando
+    """
+    lista_barco1=[]
+    
+    
+    for x in db:
+        if db[x]["barco"]==barco:
+            lista_barco1.append(x)
+       
+    print(barco)
+    if lista_barco1==[]:
+        print("No hay pasajeros registrados")
+    else:
+        cant_trav=len(lista_barco1)
+        no_tour=[]
+        for x in lista_barco1:
+            if db[x]["tour"]==0:
+                no_tour.append(x)
+        cant_no_tour=len(no_tour)
+        porct=(cant_no_tour*100)/cant_trav
+        print(f"El percentaje de clientes que no compran tour es de {porct}%")
 
-    print("<>"*10)
+    
 
-    print("Sabas Nieves")
-    tours=0
-    tickets=0
-    for x in lista_barco4:
-        tours+=db[x]["tour"]
-        tickets+=db[x]["precio"]
-    suma=tours+tickets
-    cant_personas=len(lista_barco1)
-    promedio_gasto=suma/cant_personas
-    print(f"El promedio de gasto por cliente es de ${promedio_gasto}")
+def top_3_fidelidad(db,barco):
+    """Esta funcion se encarga de ordenar a los pasajeros en un top 3 de los que mas dinero gastaron
 
-def no_tour(db):
+    Args:
+        db (diccionario):Contiene la informacion de los pasajeros
+        barco (string): String del nombre del barco que estamos gestionando
+    """    
+    
+    lista_barco1=[]
+    
+    lista_top_3=[]
+    for x in db:
+        if db[x]["barco"]==barco:
+            lista_barco1.append(x)
+            ticket=db[x]["precio"]
+            tour=db[x]["tour"]
+            total=ticket+tour
+            dci_pers={total:x}
+            
+            lista_top_3.append(dci_pers)
+    if len(lista_top_3)<3:
+        print("No hay mas de tres pasajeros")
+    else:
+        lista_top=[]
+        for x in range(len(lista_top_3)):
+            for key, value in lista_top_3[x].items():
+                
+                lista_top.append(key)
+
+        ordenado=insertion_sort(lista_top)[::-1][:3]
+        
+        cont=0
+        lista_dni=[]
+        for x in range(len(lista_top_3)):
+            for y in ordenado:
+                for key, value in lista_top_3[x].items():
+                    if key==y:
+                        # cont+=1
+                        # print(f"{cont}. {key} {value}")
+                        lista_dni.append(value)
+        
+        cont_1=0
+        for x in lista_dni:
+            cont_1+=1
+            ticket=db[x]["precio"]
+            tour=db[x]["tour"]
+            total=ticket+tour
+            print(f"Puesto nro{cont_1} {db[x]['Nombre']}: ${total}")
+    
+
+def insertion_sort(vector):
+    """Esta funcion se encarga de ordenar un vector de menor a mayor.
+
+    Args:
+        vector (lista): vector que se quiere ordenar.
+
+    Returns:
+        [lista]: retorna el vector ordenado.
+    """
+    for i in range(1,len(vector)):
+        temp=vector[i]
+        j=i-1
+        while j >=0 and temp<vector[j]:
+            vector[j+1]=vector[j]
+            j-=1
+        vector[j+1]=temp
+    return vector
+
+
+def top_cruceros(db):
+    """Esta funcion se encarga de de ordenar a los de mayor a menor en un top 3 de los barcos que mas dinero generaron en tickets.
+
+    Args:
+        db (diccionario):Contiene la informacion de los pasajeros
+        
+    """
+
     lista_barco1=[]
     lista_barco2=[]
     lista_barco3=[]
     lista_barco4=[]
+
+    precio_barcos=[]
+    lista_preciio_barcos=[]
     for x in db:
         if db[x]["barco"]=="El Dios de los Mares":
             lista_barco1.append(x)
@@ -1376,54 +1452,96 @@ def no_tour(db):
             lista_barco3.append(x)
         elif db[x]["barco"]=="Sabas Nieves":
             lista_barco4.append(x)
-    
-    print("El Dios de los Mares")
-    cant_trav=len(lista_barco1)
-    no_tour=[]
+    precio_b1=0
     for x in lista_barco1:
-        if db[x]["tour"]==0:
-            no_tour.append(x)
-    cant_no_tour=len(no_tour)
-    porct=(cant_no_tour*100)/cant_trav
-    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+        ticket=db[x]["precio"]
+        precio_b1+=ticket
+    precio_barcos.append(precio_b1)
+    ship={precio_b1:"El Dios de los Mares"}
+    lista_preciio_barcos.append(ship)
 
-    print("<>"*10)   
-
-    print("La Reina Isabel")
-    cant_trav=len(lista_barco2)
-    no_tour=[]
+    precio_b2=0
     for x in lista_barco2:
-        if db[x]["tour"]==0:
-            no_tour.append(x)
-    cant_no_tour=len(no_tour)
-    porct=(cant_no_tour*100)/cant_trav
-    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+        ticket=db[x]["precio"]
+        precio_b2+=ticket
+    precio_barcos.append(precio_b2)
+    ship={precio_b2:"La Reina Isabel"}
+    lista_preciio_barcos.append(ship)
 
-    print("<>"*10)
-
-    print("El Libertador del Océano")
-    cant_trav=len(lista_barco3)
-    no_tour=[]
+    precio_b3=0
     for x in lista_barco3:
-        if db[x]["tour"]==0:
-            no_tour.append(x)
-    cant_no_tour=len(no_tour)
-    porct=(cant_no_tour*100)/cant_trav
-    print(f"El percentaje de clientes que no compran tour es de {porct}%")
+        ticket=db[x]["precio"]
+        precio_b3+=ticket
+    precio_barcos.append(precio_b3)
+    ship={precio_b3:"El Libertador del Océano"}
+    lista_preciio_barcos.append(ship)
 
-    print("<>"*10)
-
-    print("Sabas Nieves")
-    cant_trav=len(lista_barco4)
-    no_tour=[]
+    precio_b4=0
     for x in lista_barco4:
-        if db[x]["tour"]==0:
-            no_tour.append(x)
-    cant_no_tour=len(no_tour)
-    porct=(cant_no_tour*100)/cant_trav
+        ticket=db[x]["precio"]
+        precio_b4+=ticket
+    precio_barcos.append(precio_b4)
+    ship={precio_b4:"Sabas Nieves"}
+    lista_preciio_barcos.append(ship)
 
-    print(f"El percentaje de clientes que no compran tour es de {porct}%")
-
-def top_3_fidelidad(db):
+    ordenado=insertion_sort(precio_barcos)[::-1][:3]
+    
+    
+    lista_barcos=[]
+    cont=0
+    for y in ordenado:
+        for x in range(len(lista_preciio_barcos)):
+            for key, value in lista_preciio_barcos[x].items():
+                if key==y:
+                    cont+=1
+                    print(f"Puesto nro {cont}.  {value}  ${key} en tickets ")
+                    lista_barcos.append(value)
+                
     
 
+def top_5(ventas,barco):
+    """Esta funcion se encarga de organizar de mayor a menor segun la mayor cantidad de productos vendidos en un restaurante
+
+    Args:
+        ventas (lista): Contiene la informacion de los productos de los restaurantes de cada barco.
+        barco (string): String del nombre del barco que estamos gestionando.
+        
+    """    
+    if barco=="El Dios de los Mares":
+        precio=0
+    elif barco=="La Reina Isabel":
+        precio=1
+    elif barco=="El Libertador del Océano":
+        precio=2
+    elif barco=="Sabas Nieves":
+        precio=3
+    
+    lista_cant=[]
+    for x in ventas[precio]:
+        lista_cant.append(x['amount'])
+    cont=0
+    ordenado=insertion_sort(lista_cant)[::-1]
+    
+    top_5=[]
+    name_1=[]
+    for y in ordenado:
+        for x in ventas[precio]:
+            if y==x['amount']:
+                cont+=1
+                name_1.append(x['name'])
+                # print(f"Puesto nro{cont}. {x['name']}. productos vendidos: {y} ")
+    name=[]            
+    for x in set(name_1):
+        name.append(x)
+    
+    print(f"""   Top 5 productos mas vendidos del restaurante
+    1er Puesto. {name[0]}, productos vendidos:{ordenado[0]}
+    2do Puesto. {name[1]}, productos vendidos:{ordenado[1]}
+    3er Puesto. {name[2]}, productos vendidos:{ordenado[2]}
+    4to Puesto. {name[3]}, productos vendidos:{ordenado[3]}
+    5to Puesto. {name[4]}, productos vendidos:{ordenado[4]}
+    """)       
+    
+    
+
+        

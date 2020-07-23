@@ -3,7 +3,7 @@ from clases import Room
 from clases import Sencilla
 from clases import Premium
 from clases import Vip
-from clases import Traveler
+
 import colorama 
 from colorama import Fore,Back,Style
 from funciones import matrixPrinter
@@ -26,6 +26,10 @@ from funciones import lugares_historicos
 from funciones import restaurante
 from funciones import prom_gasto
 from funciones import no_tour
+from funciones import top_3_fidelidad
+from funciones import top_cruceros
+from funciones import top_5
+
 import requests
 from funciones import api
 from string import ascii_letters
@@ -56,6 +60,7 @@ def main():
                 precio= dic[i]["cost"]
                 info_pisos= dic[i]["rooms"]
                 cap_habi= dic[i]["capacity"]
+                ventas.append(dic[i]["sells"])
                 creuceros.append(Cruise(nombre,ruta,fecha_de_salida,precio,info_pisos,cap_habi))
                 
         
@@ -75,7 +80,7 @@ def main():
                 with open("habitaciones.txt", "r", encoding="utf-8") as archivo:
                         texto=archivo.read()
                         barcos=json.loads(texto)
-        except:
+        except:                                                                  #Este super ciclo se encarga de generar el diccionario de habitaciones si el archivo txt no esta creado
                 for barco in creuceros:
                         nombre=barco.name
                         pisos= barco.floors_info
@@ -202,10 +207,32 @@ def main():
                                 restaurante(restau,barco)
                                 continue
                         elif menu=="7":
-                                prom_gasto(db)
+                                barco=select_barco()
+
                                 print("<>"*10)
-                                no_tour(db)
+
+                                print("Promedio de gasto por cliente")
+                                prom_gasto(db,barco)
+
+                                print("<>"*10)
+
+                                print("Porcentaje de pasajeros que no compran tour")
+                                no_tour(db,barco)
+
+                                print("<>"*10)
+
+                                print("Top 3 clientes")
+                                top_3_fidelidad(db,barco)
+
+                                print("<>"*10)
+
+                                print("Top 3 cruceros con mas ventas")
+                                top_cruceros(db)
+
+                                print("<>"*10)
+                                top_5(ventas,barco)
                                 continue
+                                
                         elif menu=="8":
                                 with open("habitaciones.txt", "w", encoding="utf-8") as archivo:
                                         archivo.write(json.dumps(barcos,ensure_ascii=False))
@@ -216,10 +243,7 @@ def main():
                                 with open("Menu.txt", "w", encoding="utf-8") as resta:
                                         resta.write(json.dumps(restau,ensure_ascii=False))
 
-                                # with open("texto.txt","w") as base_datos:                                    #se abre el archivo texto.txt para poder escribir los nuevos datos del que el usuario desea guardar.  
-                                #         for hab_temp in hab_ocu:
-                                #                 big_string=(f"{hab_temp.letra},{hab_temp.numero},{hab_temp.capacidad},{hab_temp.referencia}\n")
-                                #                 base_datos.write(big_string)
+                              
                                 break
 
                         else:

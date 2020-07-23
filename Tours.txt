@@ -1,1 +1,1 @@
-{"Tour en el puerto": {"cupos": 6, "28155110": " cupos:2 "}, "Degustacion de comida": {"cupos": 99, "12345": " cupos:1 "}, "Trotar por el pueblo": {"cupos": "ilimitados"}, "Visita a lugares historicos": {"cupos": 12, "28155110": " cupos:3 "}}
+{"Tour en el puerto": {"cupos": 6, "28155110": " cupos:2 "}, "Degustacion de comida": {"cupos": 99, "12345": " cupos:1 "}, "Trotar por el pueblo": {"cupos": "ilimitados"}, "Visita a lugares historicos": {"cupos": 11, "28155110": " cupos:3 ", "1434": " cupos:1 "}}
